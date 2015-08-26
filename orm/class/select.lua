@@ -249,7 +249,7 @@ local Select = function(own_table)
         --
         -- @return {string} comma separeted fields
         --------------------------------------------
-        _build_including = function (self, own_table)
+        _build_including = function (self, own_table, count)
             local include = {}
             local colname_as, colname
 
@@ -257,10 +257,16 @@ local Select = function(own_table)
                 own_table = self.own_table
             end
 
-            -- get current column
-            for _, column in pairs(own_table.__colnames) do
-                colname, colname_as = own_table:column(column.name)
-                table.insert(include, colname .. " AS " .. colname_as)
+            -- If count is requested
+            if count then
+              colname, colname_as = own_table:column("count")
+              table.insert(include, "COUNT(*)" .. " AS " .. colname_as)
+            else
+              -- get current column
+              for _, column in pairs(own_table.__colnames) do
+                  colname, colname_as = own_table:column(column.name)
+                  table.insert(include, colname .. " AS " .. colname_as)
+              end
             end
 
             include = table.join(include)
@@ -269,8 +275,8 @@ local Select = function(own_table)
         end,
 
         -- Method for build select with rules
-        _select = function (self)
-            local including = self:_build_including()
+        _select = function (self, get_count)
+            local including = self:_build_including(nil, get_count)
             local joining = ""
             local _select
             local tablename
@@ -585,6 +591,15 @@ local Select = function(own_table)
         all = function (self)
             local data = self:_select()
             return QueryList(self.own_table, data)
+        end,
+
+        -- Return count query
+        --
+        count = function (self)
+          local data = self:_select(true)
+          if data[1] then
+              return data[1]['count']
+          end
         end
     }
 end
