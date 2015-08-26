@@ -47,7 +47,7 @@ DB = {
     password = DB.password or nil
 }
 
-local sql, _connect
+local sql, _connect, _backend
 
 -- Get database by settings
 if DB.type == SQLITE then
@@ -62,10 +62,11 @@ elseif DB.type == MYSQL then
     _connect = sql:connect(DB.name, DB.username, DB.password, DB.host, DB.port)
 
 elseif DB.type == POSTGRESQL then
-    require("luasql.postgres")
-    sql = luasql.postgres()
+    driver = require "luasql.postgres"
+    sql = assert (driver.postgres())
     print(DB.name, DB.username, DB.password, DB.host, DB.port)
     _connect = sql:connect(DB.name, DB.username, DB.password, DB.host, DB.port)
+    _backend = require 'orm.backends.postgresql'
 
 else
     BACKTRACE(ERROR, "Database type not suported '" .. tostring(DB.type) .. "'")
@@ -93,6 +94,7 @@ end
 db = {
     -- Satabase connect instance
     connect = _connect,
+    backend = _backend,
 
     -- Execute SQL query
     execute = function (self, query)

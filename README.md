@@ -18,7 +18,7 @@ DB = {}
 
 1. `type` - by default `"sqlite3"`. Also it can be:
     - `"mysql"` - for MySQL database
-    - `"postgres"` - for PostgreSQL database (*implemented soon*)
+    - `"postgresql"` - for PostgreSQL database
 2. `name` - this is a path to database file for `"sqlite3"`. For other databases this value contains database name. (*by default `"database.db"`*)
 3. `username` - database user name (*by default `nil`*)
 4. `password` - database password (*by default `nil`*)
@@ -57,7 +57,7 @@ For every table is created a column `id` with `PRIMARY KEY` field by default.
 Also you can add different settings to your table fields
 
 1. `max_length` - it is a maximum allowable value of symbols that you can use in a string
-2. `unique` - if this value is `true ` then all the column's values are unique 
+2. `unique` - if this value is `true ` then all the column's values are unique
 3. `null` - can be `true` or `false`. If value is `true` then value in table will be saved as `NULL`.
 4. `default` - if you didn't add any value to this field - it is going to be saved as default value.
 5. `primary_key` - If you want to add some value as `primary key`, you can set this value as `true`.
@@ -70,9 +70,9 @@ Supported types of table fields
 2. `IntegerField` - Creates `INTEGER` field
 3. `TextField` - Creates `TEXT` field
 4. `BooleanField` - Creates `BOOLEAN` field
-5. `DateTimeField` - Creates `INTEGER` field but brings back `os.date` instance 
+5. `DateTimeField` - Creates `INTEGER` field but brings back `os.date` instance
 6. `PrimaryField` - Creates `INTEGER` field with `PRIMARY KEY`
-7. `ForeignKey` - Creates relationships between tables. 
+7. `ForeignKey` - Creates relationships between tables.
 
 Also you can create your types of table fields. But about it later.
 
@@ -122,7 +122,7 @@ Now try to get new username for user:
 
 
 ```lua
-print("New user name is " .. user.username) -- New user name is John Smith 
+print("New user name is " .. user.username) -- New user name is John Smith
 ```
 
 You have updated in database only the column that you changed.
@@ -237,7 +237,7 @@ But we have 2 users with age 44. We can order them by name.
 ```lua
 users = User.get:order_by({desc('age'), asc('username')}):all()
 ```
-    
+
 You can order your table query by other parameters too.
 
 ### Group result ###
@@ -272,7 +272,7 @@ Great! But what if we need to do more operations than just a differentiation of 
 
 *For example we use for default `colname`. It can be any column in your model*
 
-1. `colname = value` - the same as `colname = value` 
+1. `colname = value` - the same as `colname = value`
 2. `colname__lt = value` - the same as `colname < value` *(`value` must be a number)*
 3. `colname__lte = value` - the same as `colname <= value` *(`value` must be a number)*
 4. `colname__gt = value` - the same as `colname > value` *(`value` must be a number)*
@@ -280,7 +280,7 @@ Great! But what if we need to do more operations than just a differentiation of 
 6. `colname__in = {v1, v2,...,vn}` - the same as `colname in (value1, value2,...,vn)` *(`vn` can be number, string)*
 7. `colname__notin = {v1, v2,...,vn}` - the same as `colname not in (value1, value2,...,vn)` *(`vn` can be number, string)*
 8. `colname__null = value` - if value is `true` then result is `colname is NULL`, but if value is `false` then result is `colname is not NULL`
-    
+
 ### Super SELECT ###
 
 But if we do ...
@@ -344,7 +344,7 @@ But if we want to get all users and also to get three news for each user . We ca
 local user = User.get:join(News):first()
 print("User " .. user.id .. " has " .. user.news_all:count() .. " news")
 -- User 1 has 2 news
-    
+
 for _, user_news in pairs(user.news_all) do
     print(user_news.title)
 end
@@ -416,11 +416,11 @@ local user_email = UserEmails({
 })
 user_email:save()
 -- This email added!
-    
+
 user_email.email = "not email"
 user_email:save()
 -- Not update
-    
+
 user_email.email = "valid@email.com"
 user_email:save()
 -- Update!

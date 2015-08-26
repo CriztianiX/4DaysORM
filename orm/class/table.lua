@@ -22,7 +22,7 @@ Table = {
 -- This method create new table
 -------------------------------------------
 -- @table_instance {table} class Table instance
--- 
+--
 -- @table_instance.__tablename__ {string} table name
 -- @table_instance.__colnames {table} list of column instances
 -- @table_instance.__foreign_keys {table} list of foreign key
@@ -128,13 +128,14 @@ function Table.new(self, args)
         -- parse column in correct types
         column = function (self, column)
             local tablename = self.__tablename__
-
+            local escape_identifier = db.backend:escape_identifier()
             if Type.is.table(column) and column.__classtype__ == AGGREGATOR then
                 column.colname = tablename .. column.colname
                 column = column .. ""
             end
 
-            return "`" .. tablename .. "`.`" .. column .. "`",
+            return escape_identifier .. tablename .. escape_identifier ..
+              "." .. escape_identifier .. column .. escape_identifier,
                    tablename .. "_" .. column
         end,
 
