@@ -68,7 +68,7 @@ local Field = {
                     settings = {
                         default = nil,
                         null = false,
-                        unique = false, 
+                        unique = false,
                         max_length = nil,
                         primary_key = false
                     },
@@ -113,6 +113,7 @@ local Field = {
 
                 if new_self.settings.foreign_key and args.to then
                     new_self.settings.to = args.to
+                    new_self.settings.foreignKey = args.foreignKey
                 end
 
                 return new_self

@@ -100,7 +100,7 @@ db = {
     execute = function (self, query)
         BACKTRACE(DEBUG, query)
 
-        local result = self.connect:execute(query)
+        local result = assert(self.connect:execute(query))
 
         if result then
             return result

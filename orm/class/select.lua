@@ -225,16 +225,22 @@ local Select = function(own_table)
                 for _, key in pairs(left_table.__foreign_keys) do
                     if key.settings.to == right_table then
                         colname = key.name
-
-                        result_join = result_join .. " \n" .. join_mode .. " `" ..
-                                      tablename .. "` ON "
+                        local fkey = ID
+                        result_join = result_join .. " \n" .. join_mode .. " " ..
+                         db.backend:escape_identifier() ..
+                         tablename ..  db.backend:escape_identifier() .. " ON "
 
                         parsed_column, _ = left_table:column(colname)
                         result_join = result_join .. parsed_column
 
-                        parsed_column, _ = right_table:column(ID)
-                        result_join = result_join .. " = " .. parsed_column
+                        if( key.field and key.field.settings
+                          and key.field.settings.foreignKey) then
+                          fkey = key.field.settings.foreignKey
+                        end
 
+
+                        parsed_column, _ = right_table:column(fkey)
+                        result_join = result_join .. " = " .. parsed_column
                         break
                     end
                 end
@@ -287,7 +293,6 @@ local Select = function(own_table)
 
             --------------------- Include Columns To Select ------------------
             _select = "SELECT " .. including
-
             -- Add join rules
             if table.getn(self._rules.columns.join) > 0 then
                 local unique_tables = {}
@@ -311,7 +316,6 @@ local Select = function(own_table)
 
                 join = self:_build_join()
             end
-
             -- Check agregators in select
             if table.getn(self._rules.columns.include) > 0 then
                 local aggregators = {}
